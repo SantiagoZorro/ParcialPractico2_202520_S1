@@ -1,24 +1,34 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MovieService } from '../movie.service';
 import { Movie } from '../Movie';
-import { moviesData } from '../moviesData';
 
 @Component({
   selector: 'app-movie-list',
-  standalone: false,
   templateUrl: './movie-list.component.html',
-  styleUrl: './movie-list.component.css',
+  styleUrls: ['./movie-list.component.css']
 })
 export class MovieListComponent implements OnInit {
   movies: Movie[] = [];
-  selected: Boolean = false;
-  selectedMovie: Movie | null = null;
+  loading = false;
+  error = '';
 
-  onSelect(movie: Movie) {
-    this.selectedMovie = movie;
-    this.selected = true;
+  constructor(private movieSrv: MovieService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.cargar();
   }
 
-  ngOnInit() {
-    this.movies = moviesData;
+  cargar(): void {
+    this.loading = true;
+    this.error = '';
+    this.movieSrv.getMovies().subscribe({
+      next: (data) => { this.movies = data ?? []; this.loading = false; },
+      error: () => { this.error = 'No se pudo cargar el listado.'; this.loading = false; }
+    });
+  }
+
+  irADetalle(id: number): void {
+    this.router.navigate(['/movies', id]);
   }
 }

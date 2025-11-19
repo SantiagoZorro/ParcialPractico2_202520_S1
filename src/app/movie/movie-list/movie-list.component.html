@@ -29,3 +29,18 @@
     </table>
   </div>
 </div>
+
+<h2>Películas</h2>
+
+<div *ngIf="loading" class="alert alert-info">Cargando…</div>
+<div *ngIf="!loading && error" class="alert alert-danger">{{ error }}</div>
+<div *ngIf="!loading && !error && movies.length === 0" class="alert alert-secondary">No hay películas.</div>
+
+<ul *ngIf="!loading && !error && movies.length">
+  <li *ngFor="let m of movies" class="movie-item">
+    <a [routerLink]="['/movies', m.id]">{{ m.title }}</a>
+
+    <span class="muted"> · {{ m.director }} · {{ m.year }}</span>
+  </li>
+</ul>
+
